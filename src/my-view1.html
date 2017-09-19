@@ -1,0 +1,77 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+
+<dom-module id="my-view1">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <firebase-app
+      id="firebaseApp"
+      name="firebaseappname"
+      api-key="AIzaSyCr6bve0jDPlaaOVsuIr4jid-LkImVtoug"
+      auth-domain="testloginfire.firebaseapp.com"
+      database-url="https://testloginfire.firebaseio.com"
+      messaging-sender-id="30071015993"></firebase-app>
+
+    <firebase-auth id="auth" app-name="firebaseappname" user="{{user}}"
+      signed-in="{{signedIn}}" provider="google" on-error="handleErrorFirebaseAuth">
+    </firebase-auth>
+
+    <div class="card">
+      <div class="circle">7</div>
+
+      <h1>Firebase Auth</h1>
+
+      User: [[signedIn]]
+
+      <paper-button raised class="indigo" on-tap="_fireAuth">Sign with firebase-auth</paper-button>
+      <paper-button raised class="indigo" on-tap="_logOut">Logout</paper-button>
+    </div>
+  </template>
+
+  <script>
+    class MyView1 extends Polymer.Element {
+      static get is() { return 'my-view1'; }
+
+      _fireAuth() {
+        this.$.auth.signInWithPopup()
+          .then(function(response) {
+            console.log('authentication ok');
+            console.log(response);
+          }).catch(function(error) {
+            console.log('authentication failed');
+            console.log(error);
+          });
+      }
+
+      _logOut() {
+        this.$.auth.signOut()
+        .then(function(response) {
+          console.log('signout ok');
+          console.log(response);
+        }).catch(function(error) {
+          console.log('signout failed');
+          console.log(error);
+        });
+      }
+
+      handleErrorFirebaseAuth(error) {
+        console.log('Error firebase-auth');
+        console.log(error);
+      }
+    }
+
+    window.customElements.define(MyView1.is, MyView1);
+  </script>
+</dom-module>
